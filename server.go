@@ -20,12 +20,13 @@ func main() {
 	}
 
 	router := mux.NewRouter()
+	api := router.PathPrefix("/api").Subrouter()
 
 	router.HandleFunc("/", routes.HomeHandler)
-	router.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
-	router.HandleFunc("/users/{id}", routes.GetUserHandler).Methods("GET")
-	router.HandleFunc("/users", routes.PostUserHandler).Methods("POST")
-	router.HandleFunc("/users", routes.DeleteUsersHandler).Methods("DELETE")
+	api.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
+	api.HandleFunc("/users/{id}", routes.GetUserHandler).Methods("GET")
+	api.HandleFunc("/users", routes.PostUserHandler).Methods("POST")
+	api.HandleFunc("/users/{id}", routes.DeleteUsersHandler).Methods("DELETE")
 
 	http.ListenAndServe(":3000", router)
 
