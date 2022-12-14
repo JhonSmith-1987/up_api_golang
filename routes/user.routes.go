@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"up_api_golang/DTO"
 	"up_api_golang/db"
 	"up_api_golang/models"
 )
@@ -38,6 +39,33 @@ func PostUserHandler(res http.ResponseWriter, req *http.Request) {
 		res.Write([]byte(err.Error()))
 	}
 	json.NewEncoder(res).Encode(createdUser)
+}
+
+func PostLoginUser(res http.ResponseWriter, req *http.Request) {
+	var loginUser models.LoginUser
+	json.NewDecoder(req.Body).Decode(&loginUser)
+	fmt.Println("el usuario enviado es ", loginUser.Email+"password: ", loginUser.Password)
+	var user models.Users
+	db.DB.Where("email = ?", loginUser.Email).First(&user)
+	fmt.Println(user)
+	if user.ID == 0 {
+		error := DTO.LoginDTO{
+			Error: "Usuario no existe",
+		}
+		json.NewEncoder(res).Encode(&error)
+		return
+	}
+	if user.Password != loginUser.Password {
+		error := DTO.LoginDTO{
+			Error: "Contraseña incorrecta",
+		}
+		json.NewEncoder(res).Encode(&error)
+		return
+	}
+	response := DTO.LoginDTO{
+		Respose: user,
+	}
+	json.NewEncoder(res).Encode(&response)
 }
 
 func DeleteUsersHandler(res http.ResponseWriter, req *http.Request) {

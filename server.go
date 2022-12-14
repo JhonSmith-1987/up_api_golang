@@ -26,6 +26,7 @@ func main() {
 	api.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
 	api.HandleFunc("/users/{id}", routes.GetUserHandler).Methods("GET")
 	api.HandleFunc("/users", routes.PostUserHandler).Methods("POST")
+	api.HandleFunc("/loginUser", routes.PostLoginUser).Methods("POST")
 	api.HandleFunc("/users/{id}", routes.DeleteUsersHandler).Methods("DELETE")
 
 	http.ListenAndServe(":3000", router)
